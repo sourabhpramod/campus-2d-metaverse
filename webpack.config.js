@@ -20,9 +20,17 @@ module.exports = {
   module: {
     rules: [
       {
-        test: /\.jsx?$/,
+        test: /\.jsx?$/, // Rule for JavaScript files
         exclude: /node_modules/,
-        loader: "babel-loader",
+        use: {
+          loader: "babel-loader",
+        },
+      },
+      {
+        test: /\.(png|jpe?g|gif)$/i, // Rule for image files
+        use: {
+          loader: "file-loader",
+        },
       },
     ],
   },

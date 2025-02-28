@@ -8,6 +8,7 @@ export default {
     scale: {
       parent: "mygame",
       autoCenter: true,
+      mode: Phaser.Scale.FIT,
     },
     // We will be expanding physics later
     physics: {
