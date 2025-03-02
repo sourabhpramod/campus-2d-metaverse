@@ -5,14 +5,17 @@ export default class MainScene extends Phaser.Scene{
         this.state={};
     }
     preload(){
-        this.load.image("character", "assets/spritesheets/character1.png");
-
+        this.load.spritesheet("character", "assets/spritesheets/character1.png", {
+            frameWidth: 896,   // Width of each frame in the sheet
+            frameHeight: 896   // Height of each frame in the sheet
+        });
         this.load.image("mainroom", "assets/backgrounds/background.png");
     }
     create(){
         const scene = this;
         let bg = this.add.image(0,0,"mainroom").setOrigin(0);
         bg.setScale(0.2);       
+        
         this.socket=io();
         scene.scene.launch("WaitingRoom", {socket: scene.socket});
         this.otherPlayers = this.physics.add.group();
@@ -44,14 +47,17 @@ export default class MainScene extends Phaser.Scene{
         });
     }
 
-    addPlayer(scene, playerInfo){
+    addPlayer(scene, playerInfo) {
         scene.joined = true;
         scene.character = scene.physics.add.sprite(
-            playerInfo.x, playerInfo.y, "character"
-        ).setOrigin(0.5,0.5).setSize(30,40).setOffset(0,24);
+            playerInfo.x, playerInfo.y, "character", 0  
+        ).setOrigin(0.5, 0.5).setSize(30, 40).setOffset(0, 24).setScale(0.1);
     }
-    addOtherPlayers(scene, playerInfo){
-        const otherPlayer = scene.add.sprite(playerInfo.x + 40, playerInfo.y + 40, "character");
+    
+    addOtherPlayers(scene, playerInfo) {
+        const otherPlayer = scene.add.sprite(
+            playerInfo.x + 40, playerInfo.y + 40, "character", 0  
+        ).setScale(0.1);
         otherPlayer.playerId = playerInfo.playerId;
         scene.otherPlayers.add(otherPlayer);
     }
