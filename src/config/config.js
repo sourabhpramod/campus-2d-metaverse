@@ -3,7 +3,7 @@ export default {
     width: 800, 
     height: 600, 
     render: {
-      pixelArt: true,
+      pixelArt: false,
     },
     scale: {
       parent: "mygame",
