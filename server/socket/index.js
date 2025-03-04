@@ -71,6 +71,13 @@ module.exports = (io) => {
       };
       socket.emit("roomCreated", key);
     });
+
+    socket.on("playerMovement", function(data){
+      const { x, y, roomKey } = data;
+      gameRooms[roomKey].players[socket.id].x = x;
+      gameRooms[roomKey].players[socket.id].y = y;
+      socket.to(roomKey).emit("playerMoved", gameRooms[roomKey].players[socket.id]);
+    });
   });
 
   function codeGenerator() {

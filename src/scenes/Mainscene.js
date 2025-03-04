@@ -50,6 +50,15 @@ export default class MainScene extends Phaser.Scene {
             scene.addOtherPlayers(scene, playerInfo);
             scene.state.numPlayers = numPlayers;
         });
+        this.socket.on("playerMoved", function(playerInfo){
+            scene.otherPlayers.getChildren().forEach(function(otherPlayer){
+                if(playerInfo.playerId === otherPlayer.playerId){
+                    const oldX = otherPlayer.x;
+                    const oldY = otherPlayer.y;
+                    otherPlayer.setPosition(playerInfo.x, playerInfo.y);
+                }
+            });
+        });
     }
 
     addPlayer(scene, playerInfo) {
@@ -71,6 +80,7 @@ export default class MainScene extends Phaser.Scene {
     }
 
     update() {
+        const scene = this;
         if (!this.joined || !this.character) return; // Prevent errors before joining
 
         const speed = 200;
@@ -88,6 +98,30 @@ export default class MainScene extends Phaser.Scene {
             this.character.setVelocityY(speed);
         }
 
+        this.character.body.velocity.normalize().scale(speed);
+
+        var x = this.character.x;
+        var y = this.character.y;
+        
+        if(
+            this.character.oldPosition && (x !== this.character.oldPosition.x ||
+                y != this.character.oldPosition.y
+            )
+        ){
+            this.moving = true;
+            this.socket.emit("playerMovement", {
+                x: this.character.x,
+                y: this.character.y,
+                roomKey: scene.state.roomKey,
+            });
+        }
+
+        this.character.oldPosition = {
+            x: this.character.x,
+            y: this.character.y,
+            rotation: this.character.rotation,
+        };
+        
         
     }
 }
