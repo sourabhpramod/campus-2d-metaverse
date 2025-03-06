@@ -12,12 +12,30 @@ export default class MainScene extends Phaser.Scene {
             frameHeight: 896   
         });
         this.load.image("mainroom", "assets/backgrounds/background.png");
+        this.load.image("chair", "assets/spritesheets/chair.png");
+        
+
     }
 
     create() {
         const scene = this;
         let bg = this.add.image(0, 0, "mainroom").setOrigin(0);
         bg.setScale(0.2);
+
+        for (let i = 0; i < 3; i++) {
+            let ch = this.add.image(this.cameras.main.width / 2 + 100, this.cameras.main.height / 2 - 150 + i * 100, "chair").setOrigin(0);
+            ch.setScale(2.5);
+        }
+
+        for (let i = 0; i < 3; i++) {
+            let ch = this.add.image(this.cameras.main.width / 2 - 100, this.cameras.main.height / 2 - 150 + i * 100, "chair").setOrigin(0);
+            ch.setScale(2.5);
+        }
+        for (let i = 0; i < 3; i++) {
+            let ch = this.add.image(this.cameras.main.width / 2 - 300, this.cameras.main.height / 2 - 150 + i * 100, "chair").setOrigin(0);
+            ch.setScale(2.5);
+        }
+        
 
         this.socket = io();
         scene.scene.launch("WaitingRoom", { socket: scene.socket });
