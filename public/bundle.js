@@ -257796,9 +257796,13 @@ class MainScene extends (phaser__WEBPACK_IMPORTED_MODULE_0___default().Scene) {
       scene.state.numPlayers = numPlayers;
       Object.keys(players).forEach(function (id) {
         if (players[id].playerid === scene.socket.id) {
-          scene.addPlayer(scene, players[id]);
+          if (!scene.character) {
+            scene.addPlayer(scene, players[id]); // Ensure only one main player
+          }
         } else {
-          scene.addOtherPlayers(scene, players[id]);
+          if (!scene.otherPlayers.getChildren().some(p => p.playerId === id)) {
+            scene.addOtherPlayers(scene, players[id]); // Add only if not existing
+          }
         }
       });
     });
@@ -257827,7 +257831,10 @@ class MainScene extends (phaser__WEBPACK_IMPORTED_MODULE_0___default().Scene) {
     scene.physics.world.setBounds(0, 0, 800, 600); // Set world boundaries
   }
   addOtherPlayers(scene, playerInfo) {
-    const otherPlayer = scene.add.sprite(playerInfo.x + 40, playerInfo.y + 40, "character", 0).setScale(0.1);
+    if (scene.otherPlayers.getChildren().some(p => p.playerId === playerInfo.playerId)) {
+      return; // Prevent duplicate addition
+    }
+    const otherPlayer = scene.add.sprite(playerInfo.x, playerInfo.y, "character", 0).setScale(0.1);
     otherPlayer.playerId = playerInfo.playerId;
     scene.otherPlayers.add(otherPlayer);
   }

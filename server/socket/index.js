@@ -53,11 +53,13 @@ module.exports = (io) => {
     });
 
     socket.on("isKeyValid", function (input) {
-      const keyArray = Object.keys(gameRooms);
-      keyArray
-        ? socket.emit("keyIsValid", input)
-        : socket.emit("keyNotValid");
-    });
+      if (gameRooms[input]) {
+          socket.emit("keyIsValid", input);
+      } else {
+          socket.emit("keyNotValid");
+      }
+  });
+  
     socket.on("getRoomCode", async function () {
       let key = codeGenerator();
       Object.keys(gameRooms).includes(key) ? (key = codeGenerator()) : key;
