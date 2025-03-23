@@ -83,6 +83,34 @@ export default class MainScene extends Phaser.Scene {
                 }
             });
         });
+
+
+        this.chatMessages = [];
+        this.chatText = this.add.text(10, this.cameras.main.height - 150, "", { fontSize: "16px", fill: "#000", wordWrap: { width: 300 } }).setDepth(10);
+    
+        const chatInput = document.createElement("input");
+        chatInput.type = "text";
+        chatInput.placeholder = "Type your message...";
+        chatInput.style.position = "absolute";
+        chatInput.style.bottom = "10px";
+        chatInput.style.left = "10px";
+        chatInput.style.width = "250px";
+        chatInput.style.padding = "5px";
+        document.body.appendChild(chatInput);
+    
+        chatInput.addEventListener("keypress", (event) => {
+            if (event.key === "Enter" && chatInput.value.trim() !== "") {
+                this.socket.emit("chatMessage", { roomKey: this.state.roomKey, message: chatInput.value });
+                chatInput.value = "";
+            }
+        });
+    
+        this.socket.on("newChatMessage", (data) => {
+            this.chatMessages.push(data.message);
+            if (this.chatMessages.length > 5) this.chatMessages.shift(); // Keep only last 5 messages
+            this.chatText.setText(this.chatMessages.join("\n"));
+        });
+
     }
 
     addPlayer(scene, playerInfo) {

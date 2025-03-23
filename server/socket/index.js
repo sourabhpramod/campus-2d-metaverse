@@ -80,6 +80,13 @@ module.exports = (io) => {
       gameRooms[roomKey].players[socket.id].y = y;
       socket.to(roomKey).emit("playerMoved", gameRooms[roomKey].players[socket.id]);
     });
+
+    socket.on("chatMessage", function (data) {
+      const { roomKey, message } = data;
+      if (gameRooms[roomKey]) {
+          io.to(roomKey).emit("newChatMessage", { message });
+      }
+  });
   });
 
   function codeGenerator() {
